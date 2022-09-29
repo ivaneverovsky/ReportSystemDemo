@@ -19,17 +19,17 @@ namespace ReportSystemDemo.Data
             try
             {
                 connection.Open();
-                MessageBox.Show("db connected");
+                //MessageBox.Show("db connected", "Success");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR! " + ex.Message);
+                MessageBox.Show(ex.Message, "Error");
             }
         }
 
-        public void SendCommand(object request)
+        public void SendCommand(string request)
         {
-            OleDbCommand command = new OleDbCommand(request.ToString(), connection);
+            OleDbCommand command = new OleDbCommand(request, connection);
 
             try
             {
@@ -39,12 +39,11 @@ namespace ReportSystemDemo.Data
                     var data = reader.GetValue(0);
 
                     MessageBox.Show(data.ToString(), "result");
-
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR! " + ex.Message);
+                MessageBox.Show(ex.Message, "Error");
             }
         }
 
@@ -52,7 +51,7 @@ namespace ReportSystemDemo.Data
         {
             if (connection.State == System.Data.ConnectionState.Open)
                 connection.Close();
-            MessageBox.Show("db disconnected");
+            //MessageBox.Show("db disconnected", "Success");
         }
     }
 }

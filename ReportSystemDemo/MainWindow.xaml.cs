@@ -3,6 +3,8 @@ using ReportSystemDemo.Models;
 using System;
 using System.Diagnostics;
 using System.Threading;
+//using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ReportSystemDemo
@@ -11,10 +13,6 @@ namespace ReportSystemDemo
     {
         OutputDataModel ODM = new OutputDataModel();
         DBConnection dbConnection = new DBConnection();
-        
-        private object request1 = "SELECT COUNT (Номер) FROM [dbo].Requests WHERE SUBSTRING([Номер],3,6) = SUBSTRING('О-240038',3,6)";
-        private object request2 = "SELECT COUNT (*) FROM [dbo].Requests";
-        private object request3 = "SELECT COUNT (*) FROM [dbo].Requests WHERE [Оценка пользователя] = 5";
 
         public MainWindow()
         {
@@ -29,22 +27,31 @@ namespace ReportSystemDemo
         {
             dbConnection.CreateConnection();
 
-            Thread thread1 = new Thread(dbConnection.SendCommand);
-            thread1.Start(request1);
+            //get results from db
+            Task[] tasks = new Task[3]
+            {
+                new Task(() => dbConnection.SendCommand("SELECT COUNT (Номер) FROM [dbo].Requests WHERE SUBSTRING([Номер],3,6) = SUBSTRING('О-240038',3,6)")),
+                new Task(() => dbConnection.SendCommand("SELECT COUNT (*) FROM [dbo].Requests")),
+                new Task(() => dbConnection.SendCommand("SELECT COUNT (*) FROM [dbo].Requests WHERE [Оценка пользователя] = 5"))
+            };
 
-            Thread thread2 = new Thread(dbConnection.SendCommand);
-            thread2.Start(request2);
+            foreach (Task task in tasks)
+                task.Start();
 
-            Thread thread3 = new Thread(dbConnection.SendCommand);
-            thread3.Start(request3);
+            try
+            {
+                //wait threads
+                Task.WaitAll(tasks);
+            }
+            catch (AggregateException ae)
+            {
+                MessageBox.Show(ae.Message, "Error");
+            }
+            
 
+            
 
-
-            //dbConnection.SendCommand(request1);
-            //dbConnection.SendCommand(request2);
-            //dbConnection.SendCommand(request3);
-
-            //dbConnection.CloseConnection();
+            dbConnection.CloseConnection();
         }
     }
 }
