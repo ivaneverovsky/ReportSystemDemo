@@ -34,28 +34,76 @@ namespace ReportSystemDemo
 
             List<object> dbData = await dbConnection.SendCommandRequest(mainRequest);
 
+            dbConnection.CloseConnection();
+
+            //make Tasks in other class
+            //get dbData
+            //make requests 
+
+
+            //amount of requests
+            int counter = 0;
+
             for (int i = 0; i < dbData.Count; i++)
             {
                 object[] guf = (object[])dbData[i];
 
-                for (int j = 0; j < guf.Length; j++)
+                try
                 {
-                    var a = guf[j];
-                    MessageBox.Show(a.ToString());
+                    DateTime a = (DateTime)guf[2];
+
+                    if (a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
+                        counter++;
+                }
+                catch
+                {
+                    continue;
                 }
             }
+            MessageBox.Show("Requests created: " + counter.ToString());
 
+            //amount of closed requests
+            int counter2 = 0;
 
-            dbConnection.CloseConnection();
+            for (int i = 0; i < dbData.Count; i++)
+            {
+                object[] guf = (object[])dbData[i];
 
+                try
+                {
+                    DateTime a = (DateTime)guf[2];
+                    string status = (string)guf[7];
 
+                    if (status == "Закрыто" && a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
+                        counter2++;
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+            MessageBox.Show("Requests closed: " + counter2.ToString());
 
-            //var SIBINTEK = await dbConnection.SendCommandGetValue("SELECT COUNT (*) FROM [dbo].Requests WHERE ([Сервисный контракт] = N'ЭКСПЕРТЕК ИБС' " +
-            //"OR[Сервисный контракт] = N'ЛВ Сфера' OR[Сервисный контракт] = N'РБС' OR[Сервисный контракт] = N'Снегирь Софт' OR[Сервисный контракт] = N'ИК Сибинтек ДИТиАВП СН' " +
-            //"OR[Сервисный контракт] = N'ИК Сибинтек УСИТО' OR[Сервисный контракт] = N'ИК Сибинтек СН' OR[Сервисный контракт] = N'Сибинтек Софт') " +
-            //"AND CAST([Дата создания] AS date) > '" + dateY + "-" + dateM + "-01'");
+            //count SLA
+            int counter3 = 0;
 
+            for (int i = 0; i < dbData.Count; i++)
+            {
+                object[] guf = (object[])dbData[i];
 
+                try
+                {
+                    if (guf[13].ToString() != "") //add date check also
+                        counter3++;
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+            double SLA = (1 - (double)counter3 / (double)counter) * 100;
+
+            MessageBox.Show("SLA: " + Math.Round(SLA, 2).ToString() + "%");
 
             //Task[] tasks = new Task[4]
             //{
