@@ -1,12 +1,15 @@
 ﻿using ReportSystemDemo.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace ReportSystemDemo.Data
 {
@@ -14,12 +17,11 @@ namespace ReportSystemDemo.Data
     {
         readonly OleDbConnection connection = new OleDbConnection(@"Provider=MSOLEDBSQL.1;Initial Catalog=TestData;Data Source=(localdb)\MSSQLLocalDB;Trusted_Connection=Yes;Persist Security Info=False");
 
-        public void CreateConnection()
+        public async Task CreateConnection()
         {
             try
             {
-                connection.Open();
-                //MessageBox.Show("db connected", "Success");
+                await connection.OpenAsync();
             }
             catch (Exception ex)
             {
@@ -27,31 +29,60 @@ namespace ReportSystemDemo.Data
             }
         }
 
-        public void SendCommand(string request)
+        public async Task<List<object>> SendCommandRequest(string request)
         {
             OleDbCommand command = new OleDbCommand(request, connection);
 
+            //store data from db here
+            List<object> dbData = new List<object>();
+
             try
             {
-                OleDbDataReader reader = command.ExecuteReader();
+                //read data from db
+                OleDbDataReader reader = (OleDbDataReader)await command.ExecuteReaderAsync();
+
                 while (reader.Read())
                 {
-                    var data = reader.GetValue(0);
+                    //create row
+                    object[] row = new object[reader.FieldCount];
 
-                    MessageBox.Show(data.ToString(), "result");
+                    reader.GetValues(row);
+                    dbData.Add(row);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
+
+            return dbData;
         }
+
+        //public async Task<int> SendCommandGetValue(string request)
+        //{
+        //    OleDbCommand command = new OleDbCommand(request, connection);
+
+        //    //store value from db here
+        //    int data = 0;
+
+        //    try
+        //    {
+        //        //read data from db
+        //        data = (int)await command.ExecuteScalarAsync();
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message, "Error");
+        //    }
+
+        //    return data;
+        //}
 
         public void CloseConnection()
         {
-            if (connection.State == System.Data.ConnectionState.Open)
+            if (connection.State == ConnectionState.Open)
                 connection.Close();
-            //MessageBox.Show("db disconnected", "Success");
         }
     }
 }
