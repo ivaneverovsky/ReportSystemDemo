@@ -2,13 +2,8 @@
 using ReportSystemDemo.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using System.Threading;
-//using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace ReportSystemDemo
 {
@@ -16,6 +11,7 @@ namespace ReportSystemDemo
     {
         OutputDataModel ODM = new OutputDataModel();
         DBConnection dbConnection = new DBConnection();
+        Calculations calculations = new Calculations();
 
         private string mainRequest = @"SELECT * FROM [dbo].Requests0310 WHERE CAST([Дата создания] AS date) >= '";
 
@@ -68,99 +64,30 @@ namespace ReportSystemDemo
 
             dbConnection.CloseConnection();
 
-
-            //amount of requests
-            int counter = 0;
-
-            for (int i = 0; i < dbData.Count; i++)
+            //count values
+            Task<object>[] tasks = new Task<object>[3]
             {
-                object[] guf = (object[])dbData[i];
+                new Task<object>(() => calculations.SumRequests(dbData)),
+                new Task<object>(() => calculations.SumClosedRequests(dbData)),
+                new Task<object>(() => calculations.SumCrisis(dbData))
+            };
 
-                try
-                {
-                    //string status = (string)guf[7];
+            foreach (Task task in tasks)
+                task.Start();
 
-                    counter++;
+            Task<double> sumSLA = tasks[0].ContinueWith(t => calculations.SumSLA(dbData, (int)tasks[0].Result));
 
-                    //if (status != "Назначено" && status != "")
-                    //    counter++;
 
-                    //if (a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
-                    //    counter++;
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-            MessageBox.Show("Requests created: " + counter.ToString());
-
-            //amount of closed requests
-            int counter2 = 0;
-
-            for (int i = 0; i < dbData.Count; i++)
+            try
             {
-                object[] guf = (object[])dbData[i];
-
-                try
-                {
-                    //DateTime a = (DateTime)guf[2];
-                    string status = (string)guf[7];
-
-                    if (status == "Закрыто")
-                        counter2++;
-                }
-                catch
-                {
-                    continue;
-                }
+                Task.WaitAll(tasks);
+                MessageBox.Show(sumSLA.Result.ToString());
+                MessageBox.Show(tasks[2].Result.ToString());
             }
-            MessageBox.Show("Requests closed: " + counter2.ToString());
-
-            //count SLA
-            int counter3 = 0;
-
-            for (int i = 0; i < dbData.Count; i++)
+            catch (AggregateException ae)
             {
-                object[] guf = (object[])dbData[i];
-
-                try
-                {
-                    //DateTime a = (DateTime)guf[2];
-
-                    if (guf[13].ToString() != "")
-                        counter3++;
-                }
-                catch
-                {
-                    continue;
-                }
+                MessageBox.Show(ae.Message, "Ошибка");
             }
-            double SLA = (1 - counter3 / (double)counter) * 100;
-
-            MessageBox.Show("SLA: " + Math.Round(SLA, 2).ToString() + "%");
-
-            //Task[] tasks = new Task[4]
-            //{
-            //    new Task(() =>  dbConnection.SendCommand("SELECT COUNT (Номер) FROM [dbo].Requests WHERE SUBSTRING([Номер],3,6) = SUBSTRING('О-240038',3,6)")),
-            //    new Task(() =>  dbConnection.SendCommand("SELECT COUNT (*) FROM [dbo].Requests")),
-            //    new Task(() =>  dbConnection.SendCommand("SELECT COUNT (*) FROM [dbo].Requests WHERE [Оценка пользователя] = 5")),
-            //    new Task(() =>  dbConnection.SendCommandRequest("SELECT * FROM [dbo].Requests"))
-            //};
-
-            //foreach (Task task in tasks)
-            //    task.Start();
-
-
-            //try
-            //{
-            //    //wait threads
-            //    Task.WaitAll(tasks);
-            //}
-            //catch (AggregateException ae)
-            //{
-            //    MessageBox.Show(ae.Message, "Error");
-            //}
         }
     }
 }
