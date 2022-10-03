@@ -25,7 +25,7 @@ namespace ReportSystemDemo.Data
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "Ошибка");
             }
         }
 
@@ -52,7 +52,7 @@ namespace ReportSystemDemo.Data
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "Ошибка");
             }
 
             return dbData;
@@ -73,7 +73,7 @@ namespace ReportSystemDemo.Data
         //    }
         //    catch (Exception ex)
         //    {
-        //        MessageBox.Show(ex.Message, "Error");
+        //        MessageBox.Show(ex.Message, "Ошибка");
         //    }
 
         //    return data;

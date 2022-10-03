@@ -19,6 +19,9 @@ namespace ReportSystemDemo
 
         private string mainRequest = @"SELECT * FROM [dbo].Requests0310";
 
+        private DateTime startDate;
+        private DateTime endDate;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +33,33 @@ namespace ReportSystemDemo
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                startDate = sDate.SelectedDate.Value;
+                endDate = fDate.SelectedDate.Value.AddHours(23).AddMinutes(59).AddSeconds(59); //sets the end of a date as a datepicker detects date from day start (12:00 AM)
+
+                if (startDate > endDate)
+                {
+                    DateTime misDate = startDate;
+                    startDate = endDate;
+                    endDate = misDate;
+
+                    MessageBox.Show("Начальная дата должна быть меньше конечной даты!\nПрограмма продолжит работу.\nПоменяли указанный диапазон местами.", "Внимание");
+
+                    //continue method with rewrite data
+                }
+            }
+            catch
+            {
+                endDate = DateTime.Now.Date; //program sets the start of a day
+                startDate = endDate.Date.AddDays(-7);
+                endDate = DateTime.Now.Date.AddHours(23).AddMinutes(59).AddSeconds(59); //we set the end of a day
+
+                MessageBox.Show("Введите дату!\nПрограмма продолжит работу.\nОтчет будет составлен за период:\nс " + startDate + "\nпо " + endDate, "Внимание");
+                
+                //continue method with rewrite data from exeption
+            }
+
             await dbConnection.CreateConnection();
 
             List<object> dbData = await dbConnection.SendCommandRequest(mainRequest);
