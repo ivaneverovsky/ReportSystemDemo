@@ -17,7 +17,7 @@ namespace ReportSystemDemo
         OutputDataModel ODM = new OutputDataModel();
         DBConnection dbConnection = new DBConnection();
 
-        private string mainRequest = @"SELECT * FROM [dbo].Requests";
+        private string mainRequest = @"SELECT * FROM [dbo].Requests0310";
 
         public MainWindow()
         {
@@ -93,7 +93,9 @@ namespace ReportSystemDemo
 
                 try
                 {
-                    if (guf[13].ToString() != "") //add date check also
+                    DateTime a = (DateTime)guf[2];
+
+                    if (guf[13].ToString() != "" && a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
                         counter3++;
                 }
                 catch
@@ -101,7 +103,7 @@ namespace ReportSystemDemo
                     continue;
                 }
             }
-            double SLA = (1 - (double)counter3 / (double)counter) * 100;
+            double SLA = (1 - counter3 / (double)counter) * 100;
 
             MessageBox.Show("SLA: " + Math.Round(SLA, 2).ToString() + "%");
 
@@ -126,9 +128,6 @@ namespace ReportSystemDemo
             //{
             //    MessageBox.Show(ae.Message, "Error");
             //}
-
-
-            MessageBox.Show("i'm done", "So");
         }
     }
 }
