@@ -17,7 +17,7 @@ namespace ReportSystemDemo
         OutputDataModel ODM = new OutputDataModel();
         DBConnection dbConnection = new DBConnection();
 
-        private string mainRequest = @"SELECT * FROM [dbo].Requests0310";
+        private string mainRequest = @"SELECT * FROM [dbo].Requests0310 WHERE CAST([Дата создания] AS date) >= '";
 
         private DateTime startDate;
         private DateTime endDate;
@@ -44,8 +44,10 @@ namespace ReportSystemDemo
                     startDate = endDate;
                     endDate = misDate;
 
-                    MessageBox.Show("Начальная дата должна быть меньше конечной даты!\nПрограмма продолжит работу.\nПоменяли указанный диапазон местами.", "Внимание");
+                    MessageBox.Show("Начальная дата должна быть меньше конечной даты!\nПрограмма продолжит работу.\nУказанный диапазон принят.", "Внимание");
 
+                    sDate.SelectedDate = startDate;
+                    fDate.SelectedDate = endDate;
                     //continue method with rewrite data
                 }
             }
@@ -62,13 +64,9 @@ namespace ReportSystemDemo
 
             await dbConnection.CreateConnection();
 
-            List<object> dbData = await dbConnection.SendCommandRequest(mainRequest);
+            List<object> dbData = await dbConnection.SendCommandRequest(mainRequest + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
 
             dbConnection.CloseConnection();
-
-            //make Tasks in other class
-            //get dbData
-            //make requests 
 
 
             //amount of requests
@@ -80,10 +78,15 @@ namespace ReportSystemDemo
 
                 try
                 {
-                    DateTime a = (DateTime)guf[2];
+                    //string status = (string)guf[7];
 
-                    if (a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
-                        counter++;
+                    counter++;
+
+                    //if (status != "Назначено" && status != "")
+                    //    counter++;
+
+                    //if (a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
+                    //    counter++;
                 }
                 catch
                 {
@@ -101,10 +104,10 @@ namespace ReportSystemDemo
 
                 try
                 {
-                    DateTime a = (DateTime)guf[2];
+                    //DateTime a = (DateTime)guf[2];
                     string status = (string)guf[7];
 
-                    if (status == "Закрыто" && a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
+                    if (status == "Закрыто")
                         counter2++;
                 }
                 catch
@@ -123,9 +126,9 @@ namespace ReportSystemDemo
 
                 try
                 {
-                    DateTime a = (DateTime)guf[2];
+                    //DateTime a = (DateTime)guf[2];
 
-                    if (guf[13].ToString() != "" && a.Month == DateTime.Now.Month && a.Year == DateTime.Now.Year)
+                    if (guf[13].ToString() != "")
                         counter3++;
                 }
                 catch

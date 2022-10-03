@@ -89,6 +89,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\Calculations.cs" />
     <Compile Include="Data\DBConnection.cs" />
     <Compile Include="UIModels\Report.cs" />
     <Compile Include="UIModels\Requests.cs" />
