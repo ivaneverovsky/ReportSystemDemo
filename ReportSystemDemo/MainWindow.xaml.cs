@@ -15,25 +15,35 @@ namespace ReportSystemDemo
         DBConnection dbConnection = new DBConnection();
         Calculations calculations = new Calculations();
 
-        Stopwatch swV = new Stopwatch();
-        Stopwatch swC = new Stopwatch();
-
         private string mainRequest = @"SELECT * FROM [dbo].Requests0310";
 
+        //date for contracts
         private DateTime startDate;
         private DateTime endDate;
+
+        //date for requests
         private DateTime yearDate;
+        private DateTime QuarterSDate;
+        private DateTime QuaterFDate;
+        private DateTime MonthDate;
 
-        private List<object> dbData = new List<object>(); //data for contracts
-        private List<object> dbDataValues = new List<object>(); //data for values
+        //data for contracts
+        private List<object> dbData = new List<object>();
 
+        //data for requests
+        private List<object> dbDataYear = new List<object>();
+        private List<object> dbDataQuarter = new List<object>();
+        private List<object> dbDataMonth = new List<object>();
+
+        //values
         private List<string> Contracts = new List<string> { "АйЭмТи", "ИК Сибинтек (СН и УСИТО)", "РН-IaaS", "РН-Предикс", "ГеоПАК", "SAP HANA" };
-        private List<string> Requests = new List<string> { "Получено", "Закрыто", "SLA", "КИ" };
+        private List<string> Requests = new List<string> { "Месяц", "Квартал", "Год"};
 
         public MainWindow()
         {
             InitializeComponent();
 
+            SetDate();
 
             reportDateMonth.Text = ODM.ReportDateMonth;
             reportDateYear.Text = ODM.ReportDateYear;
@@ -51,8 +61,6 @@ namespace ReportSystemDemo
         //check user input
         private void CheckDate()
         {
-            yearDate = new DateTime(DateTime.Now.Year, 1, 1);
-
             try
             {
                 startDate = sDate.SelectedDate.Value;
@@ -64,7 +72,7 @@ namespace ReportSystemDemo
                     startDate = endDate;
                     endDate = misDate;
 
-                    MessageBox.Show("Начальная дата должна быть меньше конечной даты!\nПрограмма продолжит работу.\nУказанный диапазон принят.", "Внимание");
+                    //MessageBox.Show("Начальная дата должна быть меньше конечной даты!\nПрограмма продолжит работу.\nУказанный диапазон принят.", "Внимание");
 
                     sDate.SelectedDate = startDate;
                     fDate.SelectedDate = endDate;
@@ -86,7 +94,10 @@ namespace ReportSystemDemo
             await dbConnection.CreateConnection();
 
             dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
-            dbDataValues = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
+            
+            dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + MonthDate + "'");
+            dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + QuarterSDate + "'" + " AND CAST([Дата создания] AS date) <= '" + QuaterFDate + "'");
+            dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
 
             dbConnection.CloseConnection();
         }
@@ -94,26 +105,21 @@ namespace ReportSystemDemo
         //count values
         private void CountValues()
         {
-            swV.Start();
             List<Requests> requests = new List<Requests>();
 
-            Task<object>[] tasks = new Task<object>[4]
+            Task<object>[] tasks = new Task<object>[3]
             {
-                new Task<object>(() => calculations.RequestsBuilder(dbDataValues, Requests[0])),
-                new Task<object>(() => calculations.RequestsBuilder(dbDataValues, Requests[1])),
-                new Task<object>(() => calculations.RequestsBuilder(dbDataValues, Requests[2])),
-                new Task<object>(() => calculations.RequestsBuilder(dbDataValues, Requests[3]))
+                new Task<object>(() => calculations.RequestsBuilder(dbDataMonth, Requests[0])),
+                new Task<object>(() => calculations.RequestsBuilder(dbDataQuarter, Requests[1])),
+                new Task<object>(() => calculations.RequestsBuilder(dbDataYear, Requests[2]))
             };
 
             foreach (Task task in tasks)
                 task.Start();
 
-            //Task<double> sumSLA = tasks[0].ContinueWith(t => calculations.SumSLA(dbDataValues, (int)tasks[0].Result));
-
             try
             {
                 Task.WaitAll(tasks);
-                //sumSLA.Wait();
             }
             catch (AggregateException ae)
             {
@@ -125,16 +131,11 @@ namespace ReportSystemDemo
 
             for (int i = 0; i < requests.Count; i++)
                 requestsListView.Items.Add(requests[i]);
-
-            swV.Stop();
-            MessageBox.Show("Requests ready. Time elapsed: " + swV.Elapsed);
-            swV.Reset();
         }
 
         //count contracts
         private void CountContracts()
         {
-            swC.Start();
             List<Report> reports = new List<Report>();
 
             Task<Report>[] tasks = new Task<Report>[6]
@@ -164,19 +165,46 @@ namespace ReportSystemDemo
 
             for (int i = 0; i < reports.Count; i++)
                 reportListView.Items.Add(reports[i]);
-
-            swC.Stop();
-            MessageBox.Show("Reports ready. Time elapsed: " + swC.Elapsed);
-            swC.Reset();
         }
 
+        //erase data
         private void Cleaning()
         {
             reportListView.Items.Clear();
             requestsListView.Items.Clear();
             calculations.ClearData();
             dbData.Clear();
-            dbDataValues.Clear();
+            dbDataMonth.Clear();
+            dbDataQuarter.Clear();
+            dbDataYear.Clear();
+        }
+
+        //set date for Year, Quarter and Month
+        private void SetDate()
+        {
+            yearDate = new DateTime(DateTime.Now.Year, 1, 1);
+            MonthDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+            if (DateTime.Now.Month >= 1 && DateTime.Now.Month <= 3)
+            {
+                QuarterSDate = new DateTime(DateTime.Now.Year, 1, 1);
+                QuaterFDate = new DateTime(DateTime.Now.Year, 3, 31);
+            }
+            else if (DateTime.Now.Month >= 4 && DateTime.Now.Month <= 6)
+            {
+                QuarterSDate = new DateTime(DateTime.Now.Year, 4, 1);
+                QuaterFDate = new DateTime(DateTime.Now.Year, 6, 30);
+            }
+            else if (DateTime.Now.Month >= 7 && DateTime.Now.Month <= 9)
+            {
+                QuarterSDate = new DateTime(DateTime.Now.Year, 7, 1);
+                QuaterFDate = new DateTime(DateTime.Now.Year, 9, 30);
+            }
+            else
+            {
+                QuarterSDate = new DateTime(DateTime.Now.Year, 10, 1);
+                QuaterFDate = new DateTime(DateTime.Now.Year, 12, 31);
+            }
         }
     }
 }

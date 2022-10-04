@@ -1,22 +1,16 @@
-﻿using ReportSystemDemo.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.OleDb;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Markup;
 
 namespace ReportSystemDemo.Data
 {
     internal class DBConnection
     {
         readonly OleDbConnection connection = new OleDbConnection(@"Provider=MSOLEDBSQL.1;Initial Catalog=TestData;Data Source=(localdb)\MSSQLLocalDB;Trusted_Connection=Yes;Persist Security Info=False");
-
+       
         public async Task CreateConnection()
         {
             try
@@ -32,7 +26,7 @@ namespace ReportSystemDemo.Data
         public async Task<List<object>> SendCommandRequest(string request)
         {
             OleDbCommand command = new OleDbCommand(request, connection);
-
+            
             //store data from db here
             List<object> dbData = new List<object>();
 
@@ -49,35 +43,18 @@ namespace ReportSystemDemo.Data
                     reader.GetValues(row);
                     dbData.Add(row);
                 }
+
+                reader.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка");
             }
 
+            command.Dispose();
+
             return dbData;
         }
-
-        //public async Task<int> SendCommandGetValue(string request)
-        //{
-        //    OleDbCommand command = new OleDbCommand(request, connection);
-
-        //    //store value from db here
-        //    int data = 0;
-
-        //    try
-        //    {
-        //        //read data from db
-        //        data = (int)await command.ExecuteScalarAsync();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message, "Ошибка");
-        //    }
-
-        //    return data;
-        //}
 
         public void CloseConnection()
         {

@@ -6,72 +6,34 @@ namespace ReportSystemDemo.Data
 {
     internal class Calculations
     {
-        ReportStorage _rs = new ReportStorage();
-
-        //number of requests
-        public int SumRequests(List<object> dbData)
-        {
-            int counter = dbData.Count;
-
-            return counter;
-        }
-
-        //number of closed requests
-        public int SumClosedRequests(List<object> dbData)
-        {
-            int counter = 0;
-
-            for (int i = 0; i < dbData.Count; i++)
-            {
-                object[] guf = (object[])dbData[i];
-
-                if (guf[7].ToString() == "Закрыто")
-                    counter++;
-            }
-
-            return counter;
-        }
-
-        //Count SLA percentage
-        public double SumSLA(List<object> dbData, int sumRequests)
-        {
-            int counter = 0;
-
-            for (int i = 0; i < dbData.Count; i++)
-            {
-                object[] guf = (object[])dbData[i];
-
-                if (guf[13].ToString() != "")
-                    counter++;
-            }
-            
-            double SLA = Math.Round((1 - counter / (double)sumRequests) * 100, 2);
-
-            return SLA;
-        }
-
-        //count crisis incidents
-        public int SumCrisis(List<object> dbData)
-        {
-            int counter = 0;
-
-            for (int i = 0; i < dbData.Count; i++)
-            {
-                object[] guf = (object[])dbData[i];
-
-                if (guf[6].ToString() == "True")
-                    counter++;
-            }
-
-            return counter;
-        }
+        Storage _s = new Storage();
 
         //count requests details for Requests
-        public Requests RequestsBuilder(List<object> dbDataValues, string requestName)
+        public Requests RequestsBuilder(List<object> dbDataValues, string dateType)
         {
+            int counter = dbDataValues.Count;
+            int closed = 0;
+            int crisis = 0;
+            int brokenSLA = 0;
 
-            var request = new Requests(requestName, 0, 0, 0);
-            _rs.AddRequest(request);
+            for (int i = 0; i < dbDataValues.Count; i++)
+            {
+                object[] guf = (object[])dbDataValues[i];
+
+                if (guf[7].ToString() == "Закрыто")
+                    closed++;
+
+                if (guf[6].ToString() == "True")
+                    crisis++;
+
+                if (guf[13].ToString() != "")
+                    brokenSLA++;
+            }
+
+            double SLA = Math.Round((1 - brokenSLA / (double)counter) * 100, 2);
+
+            var request = new Requests(counter, closed, SLA, crisis, dateType);
+            _s.AddRequest(request);
 
             return request;
         }
@@ -313,7 +275,7 @@ namespace ReportSystemDemo.Data
             double actualSLA = Math.Round((1 - SLABreakCounter/(double)counter) * 100, 2);
 
             var report = new Report(status, contractName, counter, crisisCounter, targetSLA, actualSLA, requests, incidents, five, four, three, two, noMark, restart);
-            _rs.AddReport(report);
+            _s.AddReport(report);
 
             return report;
         }
@@ -321,19 +283,19 @@ namespace ReportSystemDemo.Data
         //collect reports for user
         public List<Report> CollectReports()
         {
-            return _rs.Reports;
+            return _s.Reports;
         }
 
         //collect requests for user
         public List<Requests> CollectRequests()
         {
-            return _rs.Requests;
+            return _s.Requests;
         }
 
         //clear lists
         public void ClearData()
         {
-            _rs.ClearLists();
+            _s.ClearLists();
         }
     }
 }

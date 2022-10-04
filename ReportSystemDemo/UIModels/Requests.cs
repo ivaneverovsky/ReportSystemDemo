@@ -2,18 +2,19 @@
 {
     internal class Requests
     {
-        public string RequestForm { get; set; }
-        public int GetMonth { get; set; }
-        public int GetQuarter { get; set; }
-        public int GetYear { get; set; }
-        
+        public int GetRequests { get; set; }
+        public int ClosedRequests { get; set; }
+        public double TotalSLA { get; set; }
+        public int CrisisCount { get; set; }
+        public string DateType { get; set; }
 
-        public Requests(string requestForm, int getMonth, int getQuarter, int getYear)
+        public Requests(int getRequests, int closedRequests, double totalSLA, int crisisCount, string dateType)
         {
-            RequestForm = requestForm;
-            GetMonth = getMonth;
-            GetQuarter = getQuarter;
-            GetYear = getYear;
+            GetRequests = getRequests;
+            ClosedRequests = closedRequests;
+            TotalSLA = totalSLA;
+            CrisisCount = crisisCount;
+            DateType = dateType;
         }
     }
 }

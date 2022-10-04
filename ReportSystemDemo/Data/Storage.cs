@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ReportSystemDemo.UIModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReportSystemDemo.UIModels
+namespace ReportSystemDemo.Data
 {
-    internal class ReportStorage
+    internal class Storage
     {
         private List<Report> _reports = new List<Report>();
         private List<Requests> _requests = new List<Requests>();
@@ -29,9 +30,5 @@ namespace ReportSystemDemo.UIModels
             _reports.Clear();
             _requests.Clear();
         }
-
-        
-
-        
     }
 }
