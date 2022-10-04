@@ -1,7 +1,9 @@
 ﻿using ReportSystemDemo.Data;
 using ReportSystemDemo.Models;
+using ReportSystemDemo.UIModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,10 +15,14 @@ namespace ReportSystemDemo
         DBConnection dbConnection = new DBConnection();
         Calculations calculations = new Calculations();
 
+        Stopwatch sw = new Stopwatch();
+
         private string mainRequest = @"SELECT * FROM [dbo].Requests0310 WHERE CAST([Дата создания] AS date) >= '";
 
         private DateTime startDate;
         private DateTime endDate;
+
+        List<string> Contracts = new List<string> { "АйЭмТи", "ИК Сибинтек (СН и УСИТО)", "РН-IaaS", "РН-Предикс", "ГеоПАК", "SAP HANA" };
 
         public MainWindow()
         {
@@ -58,6 +64,9 @@ namespace ReportSystemDemo
                 //continue method with rewrite data from exeption
             }
 
+            sw.Start();
+
+
             await dbConnection.CreateConnection();
 
             List<object> dbData = await dbConnection.SendCommandRequest(mainRequest + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
@@ -69,7 +78,7 @@ namespace ReportSystemDemo
             {
                 new Task<object>(() => calculations.SumRequests(dbData)),
                 new Task<object>(() => calculations.SumClosedRequests(dbData)),
-                new Task<object>(() => calculations.SumCrisis(dbData))
+                new Task<object>(() => calculations.SumCrisis(dbData)),
             };
 
             foreach (Task task in tasks)
@@ -77,17 +86,40 @@ namespace ReportSystemDemo
 
             Task<double> sumSLA = tasks[0].ContinueWith(t => calculations.SumSLA(dbData, (int)tasks[0].Result));
 
+            //count contracts
+            Task<Report>[] tasks2 = new Task<Report>[6]
+            {
+                new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[0])),
+                new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[1])),
+                new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[2])),
+                new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[3])),
+                new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[4])),
+                new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[5]))
+            };
+
+            foreach (Task task in tasks2)
+                task.Start();
 
             try
             {
                 Task.WaitAll(tasks);
-                MessageBox.Show(sumSLA.Result.ToString());
-                MessageBox.Show(tasks[2].Result.ToString());
+
+                Task.WaitAll(tasks2);
             }
             catch (AggregateException ae)
             {
                 MessageBox.Show(ae.Message, "Ошибка");
             }
+
+            sw.Stop();
+            MessageBox.Show("time elapsed: " + sw.Elapsed.ToString());
+
+            foreach (var task in tasks2)
+            {
+                MessageBox.Show(task.Result.ContractName.ToString() + ": " + task.Result.Requests.ToString());
+            }
+           
+            sw.Reset();
         }
     }
 }
