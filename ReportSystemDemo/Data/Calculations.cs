@@ -66,6 +66,16 @@ namespace ReportSystemDemo.Data
             return counter;
         }
 
+        //count requests details for Requests
+        public Requests RequestsBuilder(List<object> dbDataValues, string requestName)
+        {
+
+            var request = new Requests(requestName, 0, 0, 0);
+            _rs.AddRequest(request);
+
+            return request;
+        }
+
         //count contracts details for Contract
         public Report ReportBuilder(List<object> dbData, string contract)
         {
@@ -302,10 +312,8 @@ namespace ReportSystemDemo.Data
 
             double actualSLA = Math.Round((1 - SLABreakCounter/(double)counter) * 100, 2);
 
-            //optional and useless
             var report = new Report(status, contractName, counter, crisisCounter, targetSLA, actualSLA, requests, incidents, five, four, three, two, noMark, restart);
             _rs.AddReport(report);
-            //
 
             return report;
         }
@@ -316,10 +324,16 @@ namespace ReportSystemDemo.Data
             return _rs.Reports;
         }
 
-        //clear report list
-        public void ClearReports()
+        //collect requests for user
+        public List<Requests> CollectRequests()
         {
-            _rs.ClearReportList();
+            return _rs.Requests;
+        }
+
+        //clear lists
+        public void ClearData()
+        {
+            _rs.ClearLists();
         }
     }
 }

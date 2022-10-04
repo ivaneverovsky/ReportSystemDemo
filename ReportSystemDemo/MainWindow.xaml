@@ -159,7 +159,7 @@
                     <GridViewColumn Header="Обращения" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding RequestForm}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -167,7 +167,7 @@
                     <GridViewColumn Header="Месяц" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding GetMonth}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -175,7 +175,7 @@
                     <GridViewColumn Header="Квартал" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding GetQuarter}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -183,7 +183,7 @@
                     <GridViewColumn Header="Год" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding GetYear}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
