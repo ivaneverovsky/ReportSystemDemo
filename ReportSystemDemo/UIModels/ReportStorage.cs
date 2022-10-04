@@ -18,5 +18,10 @@ namespace ReportSystemDemo.UIModels
         {
             _reports.Add(report);
         }
+
+        public void ClearReportList()
+        {
+            _reports.Clear();
+        }
     }
 }

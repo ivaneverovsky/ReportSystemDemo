@@ -1,7 +1,6 @@
 ﻿using ReportSystemDemo.UIModels;
 using System;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace ReportSystemDemo.Data
 {
@@ -77,14 +76,12 @@ namespace ReportSystemDemo.Data
             int requests = 0;
             int incidents = 0;
             int crisisCounter = 0;
-
             double five = 0;
             double four = 0;
             double three = 0;
             double two = 0;
             double noMark = 0;
             double restart = 0;
-
             int SLABreakCounter = 0;
 
             for (int i = 0; i < dbData.Count; i++)
@@ -305,10 +302,24 @@ namespace ReportSystemDemo.Data
 
             double actualSLA = Math.Round((1 - SLABreakCounter/(double)counter) * 100, 2);
 
+            //optional and useless
             var report = new Report(status, contractName, counter, crisisCounter, targetSLA, actualSLA, requests, incidents, five, four, three, two, noMark, restart);
             _rs.AddReport(report);
+            //
 
             return report;
+        }
+
+        //collect reports for user
+        public List<Report> CollectReports()
+        {
+            return _rs.Reports;
+        }
+
+        //clear report list
+        public void ClearReports()
+        {
+            _rs.ClearReportList();
         }
     }
 }

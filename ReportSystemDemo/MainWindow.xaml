@@ -34,7 +34,7 @@
 
         <TextBlock Margin="10,6,216,5" FontSize="14" FontWeight="Bold" Text="СЕРВИСНАЯ ДЕЯТЕЛЬНОСТЬ"/>
 
-        <ListView x:Name="reportListView" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.ColumnSpan="2" Margin="10,10,10,10" 
+        <ListView x:Name="reportListView" Grid.Row="2" Grid.ColumnSpan="2" Margin="10,10,10,10" 
                   Grid.RowSpan="2" BorderBrush="Red" FontWeight="Bold" HorizontalContentAlignment="Stretch" 
                   VerticalContentAlignment="Stretch" FontSize="14" FontFamily="Times New Roman" BorderThickness="2,2,2,2" 
                   IsTextSearchEnabled="False" Focusable="False">
@@ -44,7 +44,7 @@
                     <GridViewColumn Header="Статус" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Status}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -52,7 +52,7 @@
                     <GridViewColumn Header="МР/РПУ" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black"/>
+                                <TextBlock Text="{Binding ContractName}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -60,7 +60,7 @@
                     <GridViewColumn Header="Кол-во обращений" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black"/>
+                                <TextBlock Text="{Binding ReportAmount}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -68,7 +68,7 @@
                     <GridViewColumn Header="КИ" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Critical}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -76,7 +76,7 @@
                     <GridViewColumn Header="SLA" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding ActualSLA}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -84,7 +84,7 @@
                     <GridViewColumn Header="Запросы" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Requests}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -92,7 +92,7 @@
                     <GridViewColumn Header="Инциденты" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Incidents}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -100,7 +100,7 @@
                     <GridViewColumn Header="5" Width="20" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Five}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -108,7 +108,7 @@
                     <GridViewColumn Header="4" Width="20">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Four}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -116,7 +116,7 @@
                     <GridViewColumn Header="3" Width="20">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Three}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -124,7 +124,7 @@
                     <GridViewColumn Header="2" Width="20">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Two}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -132,7 +132,7 @@
                     <GridViewColumn Header="-" Width="20">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding NoMark}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -140,7 +140,7 @@
                     <GridViewColumn Header="Restart" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
+                                <TextBlock Text="{Binding Restart}" Margin="0 10 30 0" TextWrapping="Wrap" Foreground="Black" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -149,7 +149,7 @@
             </ListView.View>
         </ListView>
 
-        <ListView x:Name="requestsListView" Grid.Column="1" Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,10,10,10"
+        <ListView x:Name="requestsListView" Grid.Column="1" Grid.Row="4" Margin="10,10,10,10"
                   BorderBrush="Red" FontWeight="Bold" HorizontalContentAlignment="Stretch" 
                   VerticalContentAlignment="Stretch" FontSize="14" FontFamily="Times New Roman" BorderThickness="2,2,2,2" 
                   IsTextSearchEnabled="False" Focusable="False">

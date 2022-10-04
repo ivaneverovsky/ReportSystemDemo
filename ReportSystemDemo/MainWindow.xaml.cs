@@ -22,7 +22,8 @@ namespace ReportSystemDemo
         private DateTime startDate;
         private DateTime endDate;
 
-        List<string> Contracts = new List<string> { "АйЭмТи", "ИК Сибинтек (СН и УСИТО)", "РН-IaaS", "РН-Предикс", "ГеоПАК", "SAP HANA" };
+        private List<object> dbData = new List<object>();
+        private List<string> Contracts = new List<string> { "АйЭмТи", "ИК Сибинтек (СН и УСИТО)", "РН-IaaS", "РН-Предикс", "ГеоПАК", "SAP HANA" };
 
         public MainWindow()
         {
@@ -33,7 +34,20 @@ namespace ReportSystemDemo
             reportDateYear.Text = ODM.ReportDateYear;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Cleaning();
+            CheckDate();
+
+            sw.Start();
+
+            Connect();
+            CountValues();
+            CountContracts();
+        }
+
+        //check user input
+        private void CheckDate()
         {
             try
             {
@@ -50,7 +64,6 @@ namespace ReportSystemDemo
 
                     sDate.SelectedDate = startDate;
                     fDate.SelectedDate = endDate;
-                    //continue method with rewrite data
                 }
             }
             catch
@@ -60,20 +73,22 @@ namespace ReportSystemDemo
                 endDate = DateTime.Now.Date.AddHours(23).AddMinutes(59).AddSeconds(59); //we set the end of a day
 
                 MessageBox.Show("Введите дату!\nПрограмма продолжит работу.\nОтчет будет составлен за период:\nс " + startDate + "\nпо " + endDate, "Внимание");
-                
-                //continue method with rewrite data from exeption
             }
+        }
 
-            sw.Start();
-
-
+        //db request
+        private async void Connect()
+        {
             await dbConnection.CreateConnection();
 
-            List<object> dbData = await dbConnection.SendCommandRequest(mainRequest + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
+            dbData = await dbConnection.SendCommandRequest(mainRequest + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
 
             dbConnection.CloseConnection();
+        }
 
-            //count values
+        //count values
+        private void CountValues()
+        {
             Task<object>[] tasks = new Task<object>[3]
             {
                 new Task<object>(() => calculations.SumRequests(dbData)),
@@ -86,8 +101,21 @@ namespace ReportSystemDemo
 
             Task<double> sumSLA = tasks[0].ContinueWith(t => calculations.SumSLA(dbData, (int)tasks[0].Result));
 
-            //count contracts
-            Task<Report>[] tasks2 = new Task<Report>[6]
+            try
+            {
+                Task.WaitAll(tasks);
+            }
+            catch (AggregateException ae)
+            {
+                MessageBox.Show(ae.Message, "Ошибка");
+            }
+        }
+
+        //count contracts
+        private Task<Report>[] CountContracts()
+        {
+            List<Report> reports = new List<Report>();
+            Task<Report>[] tasks = new Task<Report>[6]
             {
                 new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[0])),
                 new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[1])),
@@ -97,29 +125,35 @@ namespace ReportSystemDemo
                 new Task<Report>(() => calculations.ReportBuilder(dbData, Contracts[5]))
             };
 
-            foreach (Task task in tasks2)
+            foreach (Task task in tasks)
                 task.Start();
 
             try
             {
                 Task.WaitAll(tasks);
-
-                Task.WaitAll(tasks2);
             }
             catch (AggregateException ae)
             {
                 MessageBox.Show(ae.Message, "Ошибка");
             }
 
-            sw.Stop();
-            MessageBox.Show("time elapsed: " + sw.Elapsed.ToString());
+            //collect for user
+            reports = calculations.CollectReports();
 
-            foreach (var task in tasks2)
-            {
-                MessageBox.Show(task.Result.ContractName.ToString() + ": " + task.Result.Requests.ToString());
-            }
-           
+            for (int i = 0; i < reports.Count; i++)
+                reportListView.Items.Add(reports[i]);
+
+            sw.Stop();
+            MessageBox.Show("Time elapsed: " + sw.Elapsed);
             sw.Reset();
+
+            return tasks;
+        }
+
+        private void Cleaning()
+        {
+            reportListView.Items.Clear();
+            calculations.ClearReports();
         }
     }
 }

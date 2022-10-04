@@ -9,10 +9,6 @@ namespace ReportSystemDemo.Models
         public string ReportDateMonth { get { return ReturnMonth(); } }
         public string ReportDateYear { get { return DateTime.Now.Year.ToString() + " года"; } }
 
-        //OPTIONAL: user input
-        //public DateTime StartDate { get; set; }
-        //public DateTime EndDate { get; set; }
-
         private static List<string> MonthList = new List<string>() {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь"
             , "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
 
