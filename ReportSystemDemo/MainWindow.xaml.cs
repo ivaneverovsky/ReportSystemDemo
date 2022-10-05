@@ -3,7 +3,6 @@ using ReportSystemDemo.Models;
 using ReportSystemDemo.UIModels;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -37,7 +36,7 @@ namespace ReportSystemDemo
 
         //values
         private List<string> Contracts = new List<string> { "АйЭмТи", "ИК Сибинтек (СН и УСИТО)", "РН-IaaS", "РН-Предикс", "ГеоПАК", "SAP HANA" };
-        private List<string> Requests = new List<string> { "Месяц", "Квартал", "Год"};
+        private List<string> Requests = new List<string> { "Месяц", "Квартал", "Год" };
 
         public MainWindow()
         {
@@ -94,7 +93,7 @@ namespace ReportSystemDemo
             await dbConnection.CreateConnection();
 
             dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
-            
+
             dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + MonthDate + "'");
             dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + QuarterSDate + "'" + " AND CAST([Дата создания] AS date) <= '" + QuaterFDate + "'");
             dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");

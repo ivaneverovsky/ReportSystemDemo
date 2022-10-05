@@ -36,7 +36,7 @@
 
         <ListView x:Name="reportListView" Grid.Row="2" Grid.ColumnSpan="2" Margin="10,10,10,10" 
                   Grid.RowSpan="2" BorderBrush="Red" FontWeight="Bold" HorizontalContentAlignment="Stretch" 
-                  VerticalContentAlignment="Stretch" FontSize="14" FontFamily="Times New Roman" BorderThickness="2,2,2,2" 
+                  VerticalContentAlignment="Stretch" FontSize="14" FontFamily="Calibri" BorderThickness="2,2,2,2" 
                   IsTextSearchEnabled="False" Focusable="False">
             <ListView.View>
                 <GridView>
@@ -151,7 +151,7 @@
 
         <ListView x:Name="requestsListView" Grid.Column="1" Grid.Row="4" Margin="10,10,10,10"
                   BorderBrush="Red" FontWeight="Bold" HorizontalContentAlignment="Stretch" 
-                  VerticalContentAlignment="Stretch" FontSize="14" FontFamily="Times New Roman" BorderThickness="2,2,2,2" 
+                  VerticalContentAlignment="Stretch" FontSize="14" FontFamily="Calibri" BorderThickness="2,2,2,2" 
                   IsTextSearchEnabled="False" Focusable="False">
             <ListView.View>
                 <GridView>

@@ -272,7 +272,7 @@ namespace ReportSystemDemo.Data
                 }
             }
 
-            double actualSLA = Math.Round((1 - SLABreakCounter/(double)counter) * 100, 2);
+            double actualSLA = Math.Round((1 - SLABreakCounter / (double)counter) * 100, 2);
 
             var report = new Report(status, contractName, counter, crisisCounter, targetSLA, actualSLA, requests, incidents, five, four, three, two, noMark, restart);
             _s.AddReport(report);
