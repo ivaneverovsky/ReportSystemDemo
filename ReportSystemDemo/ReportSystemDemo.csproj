@@ -98,8 +98,7 @@
     <Compile Include="Data\Calculations.cs" />
     <Compile Include="Data\DBConnection.cs" />
     <Compile Include="Data\Storage.cs" />
-    <Compile Include="UIModels\GraphLowGrade.cs" />
-    <Compile Include="UIModels\GraphRestart.cs" />
+    <Compile Include="UIModels\Graph.cs" />
     <Compile Include="UIModels\Report.cs" />
     <Compile Include="UIModels\Requests.cs" />
     <Compile Include="UIModels\ServiceQualityDynamics.cs" />

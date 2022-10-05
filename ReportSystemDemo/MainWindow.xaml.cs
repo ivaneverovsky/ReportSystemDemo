@@ -14,11 +14,8 @@ namespace ReportSystemDemo
         OutputDataModel ODM = new OutputDataModel();
         DBConnection dbConnection = new DBConnection();
         Calculations calculations = new Calculations();
-        //GraphLowGrade glg = new GraphLowGrade();
-        GraphRestart gr = new GraphRestart();
 
-        Stopwatch swV = new Stopwatch();
-        Stopwatch swC = new Stopwatch();
+        Graph graph = new Graph();
 
         private string mainRequest = @"SELECT * FROM [dbo].Requests0310";
 
@@ -44,7 +41,6 @@ namespace ReportSystemDemo
         private List<string> Contracts = new List<string> { "АйЭмТи", "ИК Сибинтек (СН и УСИТО)", "РН-IaaS", "РН-Предикс", "ГеоПАК", "SAP HANA" };
         private List<string> Requests = new List<string> { "Месяц", "Квартал", "Год" };
 
-        
 
         public MainWindow()
         {
@@ -55,66 +51,25 @@ namespace ReportSystemDemo
             reportDateMonth.Text = ODM.ReportDateMonth;
             reportDateYear.Text = ODM.ReportDateYear;
 
+            graph.BuildGraph1();
+            graph.BuildGraph2();
+            graph.BuildGraph3();
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            swC.Start();
-            swV.Start();
-
             Cleaning();
             CheckDate();
             Connect();
             CountValues();
             CountContracts();
 
-            //DataContext = glg.BuildGraph();
-            DataContext = gr.BuildGraph();
+            graphLowGrade.Series = graph.SeriesCollection;
+            graphRestart.Series = graph.SeriesCollection2;
+            graphCrisis.Series = graph.SeriesCollection3;
         }
-
-        //check user input
-        private void CheckDate()
-        {
-            try
-            {
-                startDate = sDate.SelectedDate.Value;
-                endDate = fDate.SelectedDate.Value.AddHours(23).AddMinutes(59).AddSeconds(59); //sets the end of a date as a datepicker detects date from day start (12:00 AM)
-
-                if (startDate > endDate)
-                {
-                    DateTime misDate = startDate;
-                    startDate = endDate;
-                    endDate = misDate;
-
-                    //MessageBox.Show("Начальная дата должна быть меньше конечной даты!\nПрограмма продолжит работу.\nУказанный диапазон принят.", "Внимание");
-
-                    sDate.SelectedDate = startDate;
-                    fDate.SelectedDate = endDate;
-                }
-            }
-            catch
-            {
-                endDate = DateTime.Now.Date; //program sets the start of a day
-                startDate = endDate.Date.AddDays(-7);
-                endDate = DateTime.Now.Date.AddHours(23).AddMinutes(59).AddSeconds(59); //we set the end of a day
-
-                MessageBox.Show("Введите дату!\nПрограмма продолжит работу.\nОтчет будет составлен за период:\nс " + startDate + "\nпо " + endDate, "Внимание");
-            }
-        }
-
-        //db request
-        private async void Connect()
-        {
-            await dbConnection.CreateConnection();
-
-            dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
-
-            dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + MonthDate + "'");
-            dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + QuarterSDate + "'" + " AND CAST([Дата создания] AS date) <= '" + QuaterFDate + "'");
-            dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
-
-            dbConnection.CloseConnection();
-        }
+        
 
         //count values
         private void CountValues()
@@ -145,10 +100,6 @@ namespace ReportSystemDemo
 
             for (int i = 0; i < requests.Count; i++)
                 requestsListView.Items.Add(requests[i]);
-
-            swV.Stop();
-            MessageBox.Show("values: " + swV.Elapsed.ToString());
-            swV.Reset();
         }
 
         //count contracts
@@ -183,10 +134,6 @@ namespace ReportSystemDemo
 
             for (int i = 0; i < reports.Count; i++)
                 reportListView.Items.Add(reports[i]);
-
-            swC.Stop();
-            MessageBox.Show("reports: " + swC.Elapsed.ToString());
-            swC.Reset();
         }
 
         //erase data
@@ -232,6 +179,50 @@ namespace ReportSystemDemo
                 QuarterSDate = new DateTime(DateTime.Now.Year, 10, 1);
                 QuaterFDate = new DateTime(DateTime.Now.Year, 12, 31);
             }
+        }
+
+        //check user input
+        private void CheckDate()
+        {
+            try
+            {
+                startDate = sDate.SelectedDate.Value;
+                endDate = fDate.SelectedDate.Value.AddHours(23).AddMinutes(59).AddSeconds(59); //sets the end of a date as a datepicker detects date from day start (12:00 AM)
+
+                if (startDate > endDate)
+                {
+                    DateTime misDate = startDate;
+                    startDate = endDate;
+                    endDate = misDate;
+
+                    //MessageBox.Show("Начальная дата должна быть меньше конечной даты!\nПрограмма продолжит работу.\nУказанный диапазон принят.", "Внимание");
+
+                    sDate.SelectedDate = startDate;
+                    fDate.SelectedDate = endDate;
+                }
+            }
+            catch
+            {
+                endDate = DateTime.Now.Date; //program sets the start of a day
+                startDate = endDate.Date.AddDays(-7);
+                endDate = DateTime.Now.Date.AddHours(23).AddMinutes(59).AddSeconds(59); //we set the end of a day
+
+                MessageBox.Show("Введите дату!\nПрограмма продолжит работу.\nОтчет будет составлен за период:\nс " + startDate + "\nпо " + endDate, "Внимание");
+            }
+        }
+
+        //db request
+        private async void Connect()
+        {
+            await dbConnection.CreateConnection();
+
+            dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
+
+            dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + MonthDate + "'");
+            dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + QuarterSDate + "'" + " AND CAST([Дата создания] AS date) <= '" + QuaterFDate + "'");
+            dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
+
+            dbConnection.CloseConnection();
         }
     }
 }
