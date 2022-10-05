@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
 
 namespace ReportSystemDemo
 {
@@ -13,6 +14,11 @@ namespace ReportSystemDemo
         OutputDataModel ODM = new OutputDataModel();
         DBConnection dbConnection = new DBConnection();
         Calculations calculations = new Calculations();
+        //GraphLowGrade glg = new GraphLowGrade();
+        GraphRestart gr = new GraphRestart();
+
+        Stopwatch swV = new Stopwatch();
+        Stopwatch swC = new Stopwatch();
 
         private string mainRequest = @"SELECT * FROM [dbo].Requests0310";
 
@@ -38,6 +44,8 @@ namespace ReportSystemDemo
         private List<string> Contracts = new List<string> { "АйЭмТи", "ИК Сибинтек (СН и УСИТО)", "РН-IaaS", "РН-Предикс", "ГеоПАК", "SAP HANA" };
         private List<string> Requests = new List<string> { "Месяц", "Квартал", "Год" };
 
+        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -46,15 +54,22 @@ namespace ReportSystemDemo
 
             reportDateMonth.Text = ODM.ReportDateMonth;
             reportDateYear.Text = ODM.ReportDateYear;
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            swC.Start();
+            swV.Start();
+
             Cleaning();
             CheckDate();
             Connect();
             CountValues();
             CountContracts();
+
+            //DataContext = glg.BuildGraph();
+            DataContext = gr.BuildGraph();
         }
 
         //check user input
@@ -130,6 +145,10 @@ namespace ReportSystemDemo
 
             for (int i = 0; i < requests.Count; i++)
                 requestsListView.Items.Add(requests[i]);
+
+            swV.Stop();
+            MessageBox.Show("values: " + swV.Elapsed.ToString());
+            swV.Reset();
         }
 
         //count contracts
@@ -164,6 +183,10 @@ namespace ReportSystemDemo
 
             for (int i = 0; i < reports.Count; i++)
                 reportListView.Items.Add(reports[i]);
+
+            swC.Stop();
+            MessageBox.Show("reports: " + swC.Elapsed.ToString());
+            swC.Reset();
         }
 
         //erase data
@@ -171,11 +194,16 @@ namespace ReportSystemDemo
         {
             reportListView.Items.Clear();
             requestsListView.Items.Clear();
+            
+            //graphLowGrade.Update();
+            //graphRestart.Update();
+
             calculations.ClearData();
             dbData.Clear();
             dbDataMonth.Clear();
             dbDataQuarter.Clear();
             dbDataYear.Clear();
+
         }
 
         //set date for Year, Quarter and Month
