@@ -50,11 +50,6 @@ namespace ReportSystemDemo
 
             reportDateMonth.Text = ODM.ReportDateMonth;
             reportDateYear.Text = ODM.ReportDateYear;
-
-            graph.BuildGraph1();
-            graph.BuildGraph2();
-            graph.BuildGraph3();
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -64,12 +59,9 @@ namespace ReportSystemDemo
             Connect();
             CountValues();
             CountContracts();
-
-            graphLowGrade.Series = graph.SeriesCollection;
-            graphRestart.Series = graph.SeriesCollection2;
-            graphCrisis.Series = graph.SeriesCollection3;
+            BuildGraphs();
         }
-        
+
 
         //count values
         private void CountValues()
@@ -141,7 +133,7 @@ namespace ReportSystemDemo
         {
             reportListView.Items.Clear();
             requestsListView.Items.Clear();
-            
+
             //graphLowGrade.Update();
             //graphRestart.Update();
 
@@ -208,6 +200,9 @@ namespace ReportSystemDemo
                 endDate = DateTime.Now.Date.AddHours(23).AddMinutes(59).AddSeconds(59); //we set the end of a day
 
                 MessageBox.Show("Введите дату!\nПрограмма продолжит работу.\nОтчет будет составлен за период:\nс " + startDate + "\nпо " + endDate, "Внимание");
+
+                sDate.SelectedDate = startDate;
+                fDate.SelectedDate = endDate;
             }
         }
 
@@ -223,6 +218,25 @@ namespace ReportSystemDemo
             dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
 
             dbConnection.CloseConnection();
+        }
+
+        //count values for Graphs
+        private void BuildGraphs()
+        {
+            graph.BuildGraphs();
+
+            graphLowGrade.Series = graph.SeriesCollectionLowGrade;
+            graphLowGrade.AxisX[0].Labels = graph.Labels;
+            graphLowGrade.AxisY[0].LabelFormatter = graph.Formatter;
+
+            graphRestart.Series = graph.SeriesCollectionRestart;
+            graphRestart.AxisX[0].Labels = graph.Labels;
+            graphRestart.AxisY[0].LabelFormatter = graph.Formatter;
+
+            graphCrisis.Series = graph.SeriesCollectionCrisis;
+            graphCrisis.AxisX[0].Labels = graph.Labels;
+            graphCrisis.AxisY[0].LabelFormatter = graph.Formatter;
+
         }
     }
 }

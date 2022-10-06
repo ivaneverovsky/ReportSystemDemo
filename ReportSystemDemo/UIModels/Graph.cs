@@ -2,58 +2,89 @@
 using LiveCharts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace ReportSystemDemo.UIModels
 {
     internal class Graph
     {
-        public SeriesCollection SeriesCollection { get; set; }
-        public SeriesCollection SeriesCollection2 { get; set; }
-        public SeriesCollection SeriesCollection3 { get; set; }
-        public string[] Labels { get; set; }
+        public SeriesCollection SeriesCollectionLowGrade { get; set; }
+        public SeriesCollection SeriesCollectionRestart { get; set; }
+        public SeriesCollection SeriesCollectionCrisis { get; set; }
+        public Func<double, string> Formatter { get; set; } = value => value.ToString() + "%";
 
-        public void BuildGraph1()
+        public List<string> Labels = new List<string> {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
+
+        public void BuildGraphs()
         {
-            SeriesCollection = new SeriesCollection
+            SeriesCollectionLowGrade = new SeriesCollection
             {
                 new ColumnSeries
                 {
-                    Title = "",
-                    Values = new ChartValues<int> { 10, 42, 39, 12, 31, 21, 15, 3, 12, 16, 0, 0 }
+                    Title = "Прошлый период",
+                    Values = new ChartValues<double> { 0, 3, 1, 3, 5, 9, 10, 1, 5, 2, 5, 1 },
+                    Fill = Brushes.Gray,
+                },
+
+                new LineSeries
+                {
+                    Title = "Факт",
+                    Values = new ChartValues<double> { 1, 3, 2, 4, 8, 7, 15, 9, 4, 5, 2, 15 },
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 1,
+                    LineSmoothness = 1,
+                    Stroke = Brushes.DarkBlue
                 }
             };
 
-            Labels = new[] { "ЯНВ", "ФЕВ", "МАР", "АПР", "МАЙ", "ИЮН", "ИЮЛ", "АВГ", "СЕН", "ОКТ", "НОЯ", "ДЕК" };
-        }
-        public void BuildGraph2()
-        {
-            SeriesCollection2 = new SeriesCollection
+            SeriesCollectionRestart = new SeriesCollection
             {
                 new ColumnSeries
                 {
-                    Title = "",
-                    Values = new ChartValues<int> { 2, 12, 6, 27, 23, 3, 8, 3, 7, 3, 10, 0 },
+                    Title = "Прошлый период",
+                    Values = new ChartValues<double> { 2, 12, 6, 27, 23, 3, 8, 3, 7, 3, 10, 60 },
+                    Fill = Brushes.Gray,
+                },
+
+                new LineSeries
+                {
+                    Values = new ChartValues<double> { 1, 3, 2, 4, 8, 7, 15, 9, 4, 5, 2, 15 },
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 1,
+                    Title = "Факт",
+                    LineSmoothness = 1,
+                    Stroke = Brushes.DarkBlue
                 }
             };
 
-            Labels = new[] { "ЯНВ", "ФЕВ", "МАР", "АПР", "МАЙ", "ИЮН", "ИЮЛ", "АВГ", "СЕН", "ОКТ", "НОЯ", "ДЕК" };
-        }
-
-        public void BuildGraph3()
-        {
-            SeriesCollection3 = new SeriesCollection
+            SeriesCollectionCrisis = new SeriesCollection
             {
                 new ColumnSeries
                 {
-                    Title = "",
-                    Values = new ChartValues<int> { 3, 1, 2, 32, 2, 32, 3, 63, 33, 39, 70, 0 }
+                    Title = "Прошлый период",
+                    Values = new ChartValues<double> { 3, 1, 2, 32, 2, 32, 3, 63, 33, 39, 70, 30 },
+                    Fill = Brushes.Gray,
+                },
+
+                new LineSeries
+                {
+                    Values = new ChartValues<double> { 1, 3, 2, 4, 8, 7, 15, 9, 4, 5, 2, 15 },
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 1,
+                    Title = "Факт",
+                    LineSmoothness = 1,
+                    Stroke = Brushes.DarkBlue
                 }
             };
-
-            Labels = new[] { "ЯНВ", "ФЕВ", "МАР", "АПР", "МАЙ", "ИЮН", "ИЮЛ", "АВГ", "СЕН", "ОКТ", "НОЯ", "ДЕК" };
         }
+        //public void BuildGraphRestart()
+        //{
+           
+        //}
+
+        //public void BuildGraphCrisis()
+        //{
+            
+        //}
     }
 }
