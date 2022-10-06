@@ -10,7 +10,7 @@ namespace ReportSystemDemo.Data
     internal class DBConnection
     {
         readonly OleDbConnection connection = new OleDbConnection(@"Provider=MSOLEDBSQL.1;Initial Catalog=TestData;Data Source=(localdb)\MSSQLLocalDB;Trusted_Connection=Yes;Persist Security Info=False");
-
+        
         public async Task CreateConnection()
         {
             try

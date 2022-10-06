@@ -57,14 +57,21 @@ namespace ReportSystemDemo
             Cleaning();
             CheckDate();
             Connect();
-            CountValues();
+            CountRequests();
             CountContracts();
+            CountGraphs();
+        }
+
+        //count values for graphs
+        private void CountGraphs()
+        {
+
+
             BuildGraphs();
         }
 
-
-        //count values
-        private void CountValues()
+        //count requests
+        private void CountRequests()
         {
             List<Requests> requests = new List<Requests>();
 
@@ -134,14 +141,45 @@ namespace ReportSystemDemo
             reportListView.Items.Clear();
             requestsListView.Items.Clear();
 
-            //graphLowGrade.Update();
-            //graphRestart.Update();
-
             calculations.ClearData();
+
             dbData.Clear();
             dbDataMonth.Clear();
             dbDataQuarter.Clear();
             dbDataYear.Clear();
+
+        }
+
+        //db request
+        private async void Connect()
+        {
+            await dbConnection.CreateConnection();
+
+            dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
+
+            dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + MonthDate + "'");
+            dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + QuarterSDate + "'" + " AND CAST([Дата создания] AS date) <= '" + QuaterFDate + "'");
+            dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
+
+            dbConnection.CloseConnection();
+        }
+
+        //count values for Graphs
+        private void BuildGraphs()
+        {
+            graph.BuildGraphs();
+
+            graphLowGrade.Series = graph.SeriesCollectionLowGrade;
+            graphLowGrade.AxisX[0].Labels = graph.Labels;
+            graphLowGrade.AxisY[0].LabelFormatter = graph.Formatter;
+
+            graphRestart.Series = graph.SeriesCollectionRestart;
+            graphRestart.AxisX[0].Labels = graph.Labels;
+            graphRestart.AxisY[0].LabelFormatter = graph.Formatter;
+
+            graphCrisis.Series = graph.SeriesCollectionCrisis;
+            graphCrisis.AxisX[0].Labels = graph.Labels;
+            graphCrisis.AxisY[0].LabelFormatter = graph.Formatter;
 
         }
 
@@ -204,39 +242,6 @@ namespace ReportSystemDemo
                 sDate.SelectedDate = startDate;
                 fDate.SelectedDate = endDate;
             }
-        }
-
-        //db request
-        private async void Connect()
-        {
-            await dbConnection.CreateConnection();
-
-            dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
-
-            dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + MonthDate + "'");
-            dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + QuarterSDate + "'" + " AND CAST([Дата создания] AS date) <= '" + QuaterFDate + "'");
-            dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
-
-            dbConnection.CloseConnection();
-        }
-
-        //count values for Graphs
-        private void BuildGraphs()
-        {
-            graph.BuildGraphs();
-
-            graphLowGrade.Series = graph.SeriesCollectionLowGrade;
-            graphLowGrade.AxisX[0].Labels = graph.Labels;
-            graphLowGrade.AxisY[0].LabelFormatter = graph.Formatter;
-
-            graphRestart.Series = graph.SeriesCollectionRestart;
-            graphRestart.AxisX[0].Labels = graph.Labels;
-            graphRestart.AxisY[0].LabelFormatter = graph.Formatter;
-
-            graphCrisis.Series = graph.SeriesCollectionCrisis;
-            graphCrisis.AxisX[0].Labels = graph.Labels;
-            graphCrisis.AxisY[0].LabelFormatter = graph.Formatter;
-
         }
     }
 }
