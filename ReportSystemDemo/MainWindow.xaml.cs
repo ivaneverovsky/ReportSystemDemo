@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Diagnostics;
+using System.Windows.Media;
 
 namespace ReportSystemDemo
 {
@@ -50,6 +51,10 @@ namespace ReportSystemDemo
 
             reportDateMonth.Text = ODM.ReportDateMonth;
             reportDateYear.Text = ODM.ReportDateYear;
+
+            //yanBut.Background = Brushes.Green;
+            //febBut.Background = Brushes.Green;
+            //marBut.Background = Brushes.Green;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

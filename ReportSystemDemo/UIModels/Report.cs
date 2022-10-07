@@ -1,4 +1,6 @@
-﻿namespace ReportSystemDemo.UIModels
+﻿using System.Windows.Media;
+
+namespace ReportSystemDemo.UIModels
 {
     internal class Report
     {
