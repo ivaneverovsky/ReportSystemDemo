@@ -5,6 +5,7 @@ namespace ReportSystemDemo.UIModels
     internal class Report
     {
         public bool Status { get; set; }
+        public string Color { get; set; }
         public string ContractName { get; set; }
         public int ReportAmount { get; set; }
         public int Critical { get; set; }
@@ -19,11 +20,12 @@ namespace ReportSystemDemo.UIModels
         public double NoMark { get; set; }
         public double Restart { get; set; }
 
-        public Report(bool status, string contractName, int reportAmount, int critical, double targetSLA,
+        public Report(bool status, string color, string contractName, int reportAmount, int critical, double targetSLA,
             double actualSLA, int requests, int incidents, double five, double four,
             double three, double two, double noMark, double restart)
         {
             Status = status;
+            Color = color;
             ContractName = contractName;
             ReportAmount = reportAmount;
             Critical = critical;

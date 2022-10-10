@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Diagnostics;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace ReportSystemDemo
 {
@@ -18,7 +19,7 @@ namespace ReportSystemDemo
 
         Graph graph = new Graph();
 
-        private string mainRequest = @"SELECT * FROM [dbo].Requests0310";
+        private string mainRequest = @"SELECT * FROM [dbo].RequestsFull";
 
         //date for contracts
         private DateTime startDate;
@@ -160,11 +161,11 @@ namespace ReportSystemDemo
         {
             await dbConnection.CreateConnection();
 
-            dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + startDate + "'" + " AND CAST([Дата создания] AS date) <= '" + endDate + "'");
+            dbData = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([CreateDate] AS date) >= '" + startDate + "'" + " AND CAST([CreateDate] AS date) <= '" + endDate + "'");
 
-            dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + MonthDate + "'");
-            dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + QuarterSDate + "'" + " AND CAST([Дата создания] AS date) <= '" + QuaterFDate + "'");
-            dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([Дата создания] AS date) >= '" + yearDate + "'");
+            dbDataMonth = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([CreateDate] AS date) >= '" + MonthDate + "'");
+            dbDataQuarter = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([CreateDate] AS date) >= '" + QuarterSDate + "'" + " AND CAST([CreateDate] AS date) <= '" + QuaterFDate + "'");
+            dbDataYear = await dbConnection.SendCommandRequest(mainRequest + " WHERE CAST([CreateDate] AS date) >= '" + yearDate + "'");
 
             dbConnection.CloseConnection();
         }

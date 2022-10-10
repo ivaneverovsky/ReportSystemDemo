@@ -42,6 +42,7 @@ namespace ReportSystemDemo.Data
         public Report ReportBuilder(List<object> dbData, string contract)
         {
             bool status = true;
+            string color = "Green";
             string contractName = contract;
             double targetSLA = 89;
             int counter = 0;
@@ -77,6 +78,7 @@ namespace ReportSystemDemo.Data
                         if (guf[6].ToString() == "True")
                         {
                             crisisCounter++;
+                            color = "Red";
                             status = false;
                         }
 
@@ -97,7 +99,7 @@ namespace ReportSystemDemo.Data
                 }
                 else if (contractName == "ИК Сибинтек (СН и УСИТО)")
                 {
-                    if (guf[11].ToString() == "Сибинтек Софт" || guf[11].ToString() == "ИК Сибинтек СН" || guf[11].ToString() == "Снегирь Софт_архив" || guf[11].ToString() == "ИК Сибинтек УСИТО" || guf[11].ToString() == "ИК Сибинтек ДИТиАВП СН" || guf[11].ToString() == "РБС_архив" || guf[11].ToString() == "1С: ЕИСУП" || guf[11].ToString() == "Снегирь Софт" || guf[11].ToString() == "РБС" || guf[11].ToString() == "ЭКСПЕРТЕК ИБС" || guf[11].ToString() == "ЛВ Сфера")
+                    if (guf[11].ToString() == "Сибинтек Софт" || guf[11].ToString() == "ИК Сибинтек СН" || guf[11].ToString() == "ИК Сибинтек УСИТО" || guf[11].ToString() == "ИК Сибинтек ДИТиАВП СН" || guf[11].ToString() == "Снегирь Софт" || guf[11].ToString() == "РБС" || guf[11].ToString() == "ЭКСПЕРТЕК ИБС" || guf[11].ToString() == "ЛВ Сфера")
                     {
                         counter++;
 
@@ -112,6 +114,7 @@ namespace ReportSystemDemo.Data
                         if (guf[6].ToString() == "True")
                         {
                             crisisCounter++;
+                            color = "Red";
                             status = false;
                         }
 
@@ -147,6 +150,7 @@ namespace ReportSystemDemo.Data
                         if (guf[6].ToString() == "True")
                         {
                             crisisCounter++;
+                            color = "Red";
                             status = false;
                         }
 
@@ -182,6 +186,7 @@ namespace ReportSystemDemo.Data
                         if (guf[6].ToString() == "True")
                         {
                             crisisCounter++;
+                            color = "Red";
                             status = false;
                         }
 
@@ -217,6 +222,7 @@ namespace ReportSystemDemo.Data
                         if (guf[6].ToString() == "True")
                         {
                             crisisCounter++;
+                            color = "Red";
                             status = false;
                         }
 
@@ -252,6 +258,7 @@ namespace ReportSystemDemo.Data
                         if (guf[6].ToString() == "True")
                         {
                             crisisCounter++;
+                            color = "Red";
                             status = false;
                         }
 
@@ -274,7 +281,7 @@ namespace ReportSystemDemo.Data
 
             double actualSLA = Math.Round((1 - SLABreakCounter / (double)counter) * 100, 2);
 
-            var report = new Report(status, contractName, counter, crisisCounter, targetSLA, actualSLA, requests, incidents, five, four, three, two, noMark, restart);
+            var report = new Report(status, color, contractName, counter, crisisCounter, targetSLA, actualSLA, requests, incidents, five, four, three, two, noMark, restart);
             _s.AddReport(report);
 
             return report;

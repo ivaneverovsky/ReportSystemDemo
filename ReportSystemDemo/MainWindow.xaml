@@ -40,7 +40,7 @@
                     <GridViewColumn Header="Статус" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Status}" Margin="0 10 30 0" TextWrapping="NoWrap" TextAlignment="Center" Foreground="Black"/>
+                                <RadioButton IsHitTestVisible="False" Background="{Binding Color}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
